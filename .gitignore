@@ -114,6 +114,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# ignore a single file
-run_classifier_ratings.*
