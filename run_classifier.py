@@ -595,8 +595,14 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       "output_weights", [num_labels, hidden_size],
       initializer=tf.truncated_normal_initializer(stddev=0.02))
 
+  print("weightsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+  print(output_weights)
+
   output_bias = tf.get_variable(
       "output_bias", [num_labels], initializer=tf.zeros_initializer())
+
+  print("biasAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+  print(output_bias)
 
   with tf.variable_scope("loss"):
     if is_training:
@@ -604,14 +610,10 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       output_layer = tf.nn.dropout(output_layer, keep_prob=0.9)
 
 
-
-    print(output_layer)
     logits = tf.matmul(output_layer, output_weights, transpose_b=True)
     logits = tf.nn.bias_add(logits, output_bias)                #shape= Tensor("loss/Shape:0", shape=(2,), dtype=int32)
 
     probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    print(probabilities)
     log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
