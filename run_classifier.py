@@ -610,15 +610,11 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     logits = tf.nn.bias_add(logits, output_bias)                #shape= Tensor("loss/Shape:0", shape=(2,), dtype=int32)
 
     probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
-    log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    print(probabilities)
+    log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
 
-    print("probabilities only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-    print(log_probs)
-
-    one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
-
-    print("OHL only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-    print(one_hot_labels)
+    one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
 
     per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)  #mean squared
     loss = tf.reduce_mean(per_example_loss)
