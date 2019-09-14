@@ -603,6 +603,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       # I.e., 0.1 dropout
       output_layer = tf.nn.dropout(output_layer, keep_prob=0.9)
 
+
+
+    print(output_layer)
     logits = tf.matmul(output_layer, output_weights, transpose_b=True)
     logits = tf.nn.bias_add(logits, output_bias)                #shape= Tensor("loss/Shape:0", shape=(2,), dtype=int32)
 
@@ -610,12 +613,12 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need
 
     print("probabilities only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-    print(probabilities)
+    print(log_probs)
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
 
     print("OHL only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-    print(tf.shape(one_hot_labels))
+    print(one_hot_labels)
 
     per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)  #mean squared
     loss = tf.reduce_mean(per_example_loss)
