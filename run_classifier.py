@@ -591,18 +591,12 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
   hidden_size = output_layer.shape[-1].value
 
-  output_weights = tf.get_variable(                             #shape = Tensor("Shape:0", shape=(2,), dtype=int32)
+  output_weights = tf.get_variable(                             #<tf.Variable 'output_weights:0' shape=(6, 768) dtype=float32_ref>
       "output_weights", [num_labels, hidden_size],
       initializer=tf.truncated_normal_initializer(stddev=0.02))
 
-  print("weightsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-  print(output_weights)
-
-  output_bias = tf.get_variable(
+  output_bias = tf.get_variable(                                #<tf.Variable 'output_bias:0' shape=(6,) dtype=float32_ref>
       "output_bias", [num_labels], initializer=tf.zeros_initializer())
-
-  print("biasAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-  print(output_bias)
 
   with tf.variable_scope("loss"):
     if is_training:
@@ -612,6 +606,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     logits = tf.matmul(output_layer, output_weights, transpose_b=True)
     logits = tf.nn.bias_add(logits, output_bias)                #shape= Tensor("loss/Shape:0", shape=(2,), dtype=int32)
+
+    print("biasAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    print(logits)
 
     probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
     log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
