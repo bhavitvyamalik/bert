@@ -589,19 +589,12 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
   # instead.
   output_layer = model.get_pooled_output()
 
-  print("the only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-  print(output_layer)
-
   hidden_size = output_layer.shape[-1].value
-  print("the only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-  print(hidden_size)
 
-  output_weights = tf.get_variable(
+  output_weights = tf.get_variable(                             #shape = Tensor("Shape:0", shape=(2,), dtype=int32)
       "output_weights", [num_labels, hidden_size],
       initializer=tf.truncated_normal_initializer(stddev=0.02))
 
-
-  print(tf.shape(output_weights))
   output_bias = tf.get_variable(
       "output_bias", [num_labels], initializer=tf.zeros_initializer())
 
@@ -611,16 +604,18 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
       output_layer = tf.nn.dropout(output_layer, keep_prob=0.9)
 
     logits = tf.matmul(output_layer, output_weights, transpose_b=True)
-    logits = tf.nn.bias_add(logits, output_bias)
-
-    print("the only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-    print(tf.shape(logits))
-
+    logits = tf.nn.bias_add(logits, output_bias)                #shape= Tensor("loss/Shape:0", shape=(2,), dtype=int32)
 
     probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
     log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need
 
+    print("probabilities only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
+    print(tf.shape(probabilities))
+
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
+
+    print("OHL only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
+    print(tf.shape(one_hot_labels))
 
     per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)  #mean squared
     loss = tf.reduce_mean(per_example_loss)
