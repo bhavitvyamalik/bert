@@ -589,6 +589,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
   # instead.
   output_layer = model.get_pooled_output()
 
+  print("the only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
+  print(output_layer)
+
   hidden_size = output_layer.shape[-1].value
 
   output_weights = tf.get_variable(
