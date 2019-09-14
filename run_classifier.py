@@ -610,7 +610,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need
 
     print("probabilities only wicket that really counts this summer - Chris Woakes' lbw against Steve Smith... he fell for 80, his lowest score of an extraordinary series, and in his absence, England have a golden opportunity to push for a 2-2 scoreline.")
-    print(tf.shape(probabilities))
+    print(probabilities)
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
 
