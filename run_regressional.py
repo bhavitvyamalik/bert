@@ -613,12 +613,12 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     #probabilities=logits
     #log_probs=logits
-    tf.one_hot(label_scores, depth=num_labels,
+    one_hot_labels=tf.one_hot(label_scores, depth=num_labels,
            on_value=label_scores, off_value=0.0,
-           axis=-1) 
+           axis=-1)
     #one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
     #tf.dtypes.cast(labels, dtype=tf.float32)
-    per_example_loss = tf.square(logits-label_scores)  #mean squared
+    per_example_loss = tf.square(logits-one_hot_labels)  #mean squared
     loss = tf.reduce_mean(per_example_loss)
 
     return (loss, per_example_loss, logits, probabilities)
