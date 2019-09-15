@@ -353,7 +353,7 @@ class ColaProcessor(DataProcessor):
 
   def get_labels(self):
     """See base class."""
-    return ["0", "1", "2", "3", "4", "5"]
+    return ["1", "2", "3", "4", "5"]
 
   def _create_examples(self, lines, set_type):
     """Creates examples for the training and dev sets."""
@@ -607,12 +607,15 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     logits = tf.matmul(output_layer, output_weights, transpose_b=True)
     logits = tf.nn.bias_add(logits, output_bias)                #Tensor("loss/BiasAdd:0", shape=(16, 6), dtype=float32)
 
-    probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
-    log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
+    #probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
+    #log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
+
+    probabilities=logits
+    log_probs=logits
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
 
-    per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)  #mean squared
+    per_example_loss = tf.square(logits-one_hot_labels, axis=-1)  #mean squared
     loss = tf.reduce_mean(per_example_loss)
 
     return (loss, per_example_loss, logits, probabilities)
