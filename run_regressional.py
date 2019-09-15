@@ -613,7 +613,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     #probabilities=logits
     #log_probs=logits
-    one_hot_labels=tf.one_hot(labels, depth=num_labels, , dtype=tf.float32
+    one_hot_labels=tf.one_hot(labels, depth=num_labels, dtype=tf.float32
            on_value=labels, off_value=0.0,
            axis=-1)
     #one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
