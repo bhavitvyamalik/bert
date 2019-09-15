@@ -592,11 +592,11 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
   hidden_size = output_layer.shape[-1].value
 
   output_weights = tf.get_variable(                             #<tf.Variable 'output_weights:0' shape=(6, 768) dtype=float32_ref>
-      "output_weights", [, hidden_size],
+      "output_weights", [1, hidden_size],
       initializer=tf.truncated_normal_initializer(stddev=0.02))
 
   output_bias = tf.get_variable(                                #<tf.Variable 'output_bias:0' shape=(6,) dtype=float32_ref>
-      "output_bias", [,], initializer=tf.zeros_initializer())
+      "output_bias", [1], initializer=tf.zeros_initializer())
 
   with tf.variable_scope("loss"):
     if is_training:
@@ -613,7 +613,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     #probabilities=logits
     #log_probs=logits
-    #one_hot_labels=tf.one_hot(labels, depth=num_labels, dtype=tf.float32, on_value=labels, off_value=0.0, axis=-1)
+    #one_hot_labels=tf.one_hot(labels, depth=num_labels, dtype=tf.float32, on_value=labels, off_value=0.0,axis=-1)
     #one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
     #tf.dtypes.cast(labels, dtype=tf.float32)
     per_example_loss = tf.square(logits-label_scores)  #mean squared
