@@ -614,7 +614,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     #log_probs=logits
 
     #one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
-
+    tf.dtypes.cast(labels, dtype=tf.float32)
     per_example_loss = tf.square(logits-labels)  #mean squared
     loss = tf.reduce_mean(per_example_loss)
 
