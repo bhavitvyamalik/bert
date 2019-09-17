@@ -353,7 +353,7 @@ class ColaProcessor(DataProcessor):
 
   def get_labels(self):
     """See base class."""
-    return ["1", "2", "3", "4", "5"]
+    return ["0", "0.2", "0.4", "0.6", "0.8", "1.0"]
 
   def _create_examples(self, lines, set_type):
     """Creates examples for the training and dev sets."""
@@ -609,9 +609,11 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     #probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
     #log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
+    probabilities = tf.nn.sigmoid(logits, axis=-1)  #sigmoid
+
     label_scores = tf.cast(labels, tf.float32)
-    probabilities=logits
-    log_probs=logits
+    #probabilities=logits
+    log_probs=probabilities
     #one_hot_labels=tf.one_hot(labels, depth=num_labels, dtype=tf.float32, on_value=labels, off_value=0.0,axis=-1)
     #one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
     #tf.dtypes.cast(labels, dtype=tf.float32)
