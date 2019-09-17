@@ -609,7 +609,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     #probabilities = tf.nn.softmax(logits, axis=-1)  #sigmoid
     #log_probs = tf.nn.log_softmax(logits, axis=-1)  #no need        #Tensor("loss/LogSoftmax:0", shape=(16, 6), dtype=float32)
-    probabilities = tf.nn.sigmoid(logits, axis=-1)  #sigmoid
+    probabilities = tf.nn.sigmoid(logits)  #sigmoid
 
     label_scores = tf.cast(labels, tf.float32)
     #probabilities=logits
