@@ -690,7 +690,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
     elif mode == tf.estimator.ModeKeys.EVAL:
 
       def metric_fn(per_example_loss, label_ids, logits, is_real_example):
-        predictions = tf.cast(logits, output_type=tf.float32)
+        predictions = tf.reduce_max(logits, axis=1, keepdims=True)
         accuracy = tf.metrics.accuracy(labels=label_ids, predictions=predictions, weights=is_real_example)
         #loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
         loss = tf.metrics.mean_squared_error(label_ids, logits)
