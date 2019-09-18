@@ -744,8 +744,8 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
     d = tf.data.Dataset.from_tensor_slices({
         "input_ids":
             tf.constant(
-                all_input_ids, shape=[num_examples, seq_length],
-                dtype=tf.int32),
+                all_input_ids, shape=[num_examples],
+                dtype=tf.float32),
         "input_mask":
             tf.constant(
                 all_input_mask,
