@@ -514,7 +514,7 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
       "input_ids": tf.FixedLenFeature([seq_length], tf.int64),
       "input_mask": tf.FixedLenFeature([seq_length], tf.int64),
       "segment_ids": tf.FixedLenFeature([seq_length], tf.int64),
-      "label_ids": tf.FixedLenFeature([], tf.int64),
+      "label_ids": tf.FixedLenFeature([], tf.float32),
       "is_real_example": tf.FixedLenFeature([], tf.int64),
   }
 
@@ -614,15 +614,6 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     label_scores = tf.cast(labels, tf.float32)
     #probabilities=logits
     log_probs=probabilities
-    print("####################################################################################")
-    sess=tf.Session()
-    sess.run(tf.global_variables_initializer())
-    print(sess.run(label_scores))
-
-    print("####################################################################################")
-    sess=tf.Session()
-    sess.run(tf.global_variables_initializer())
-    print(sess.run(probabilities))
 
     #one_hot_labels=tf.one_hot(labels, depth=num_labels, dtype=tf.float32, on_value=labels, off_value=0.0,axis=-1)
     #one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)     #Tensor("loss/one_hot:0", shape=(16, 6), dtype=float32)
@@ -699,7 +690,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
     elif mode == tf.estimator.ModeKeys.EVAL:
 
       def metric_fn(per_example_loss, label_ids, logits, is_real_example):
-        predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
+        predictions = tf.argmax(logits, axis=-1, output_type=tf.float32)
         accuracy = tf.metrics.accuracy(
             labels=label_ids, predictions=predictions, weights=is_real_example)
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
@@ -766,7 +757,7 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
                 shape=[num_examples, seq_length],
                 dtype=tf.int32),
         "label_ids":
-            tf.constant(all_label_ids, shape=[num_examples], dtype=tf.int32),
+            tf.constant(all_label_ids, shape=[num_examples], dtype=tf.float32),
     })
 
     if is_training:
