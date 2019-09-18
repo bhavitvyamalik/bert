@@ -615,9 +615,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     #probabilities=logits
     log_probs=probabilities
     print("####################################################################################")
-    tf.print(label_scores)
+    tf.print(label_scores, output_stream=sys.stderr)
 
-    tf.print(probabilities)
+    tf.print(probabilities, output_stream=sys.stderr)
     print("####################################################################################")
 
     #one_hot_labels=tf.one_hot(labels, depth=num_labels, dtype=tf.float32, on_value=labels, off_value=0.0,axis=-1)
