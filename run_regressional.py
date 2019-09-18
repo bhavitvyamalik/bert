@@ -722,4 +722,3 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
   tf.app.run()
- !CUDA_VISIBLE_DEVICES=0 python run_regressional.py --data_dir=./dataset_rating --task_name=custom --vocab_file=/content/model/uncased_L-12_H-768_A-12/vocab.txt --bert_config_file=/content/model/uncased_L-12_H-768_A-12/bert_config.json --output_dir=./bert_output/
