@@ -404,11 +404,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
 
     tvars = tf.trainable_variables()
 
-    global initialized_variable_names
     scaffold_fn = None
     if init_checkpoint:
-      (assignment_map,
-       initialized_variable_names) = modeling.get_assigment_map_from_checkpoint(
+      (assignment_map, initialized_variable_names) = modeling.get_assigment_map_from_checkpoint(
            tvars, init_checkpoint)
       if use_tpu:
 
