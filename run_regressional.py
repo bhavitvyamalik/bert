@@ -421,6 +421,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     tf.logging.info("**** Trainable Variables ****")
     for var in tvars:
       init_string = ""
+      global initialized_variable_names
       if var.name in initialized_variable_names:
         init_string = ", *INIT_FROM_CKPT*"
       tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
