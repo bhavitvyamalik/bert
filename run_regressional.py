@@ -209,9 +209,9 @@ class CustomProcessor(DataProcessor):
         if i == 0:
             continue
         guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
-        text_a = tokenization.convert_to_unicode(line[-3])
-        text_b = tokenization.convert_to_unicode(line[-2])
-        label = float(line[-1])
+        text_a = tokenization.convert_to_unicode(line[3])
+        text_b = tokenization.convert_to_unicode(line[2])
+        label = float(line[1])
         examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
     return examples
 ###
@@ -722,3 +722,4 @@ if __name__ == "__main__":
   flags.mark_flag_as_required("bert_config_file")
   flags.mark_flag_as_required("output_dir")
   tf.app.run()
+ !CUDA_VISIBLE_DEVICES=0 python run_regressional.py --data_dir=./dataset_rating --task_name=custom --vocab_file=/content/model/uncased_L-12_H-768_A-12/vocab.txt --bert_config_file=/content/model/uncased_L-12_H-768_A-12/bert_config.json --output_dir=./bert_output/
