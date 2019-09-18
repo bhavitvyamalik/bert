@@ -514,7 +514,7 @@ def file_based_input_fn_builder(input_file, seq_length, is_training,
       "input_ids": tf.FixedLenFeature([seq_length], tf.int64),
       "input_mask": tf.FixedLenFeature([seq_length], tf.int64),
       "segment_ids": tf.FixedLenFeature([seq_length], tf.int64),
-      "label_ids": tf.FixedLenFeature([], tf.float32),
+      "label_ids": tf.FixedLenFeature([], tf.int64),
       "is_real_example": tf.FixedLenFeature([], tf.int64),
   }
 
@@ -690,12 +690,12 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
     elif mode == tf.estimator.ModeKeys.EVAL:
 
       def metric_fn(per_example_loss, label_ids, logits, is_real_example):
-        predictions = tf.argmax(logits, axis=-1, output_type=tf.float32)
-        accuracy = tf.metrics.accuracy(
-            labels=label_ids, predictions=predictions, weights=is_real_example)
-        loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
+        #predictions = tf.argmax(logits, axis=-1, output_type=tf.int32)
+        #accuracy = tf.metrics.accuracy(labels=label_ids, predictions=predictions, weights=is_real_example)
+        #loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
+        loss = tf.metrics.mean_squared_error(label_ids, logits)
         return {
-            "eval_accuracy": accuracy,
+            #"eval_accuracy": accuracy,
             "eval_loss": loss,
         }
 
@@ -709,7 +709,7 @@ def model_fn_builder(bert_config, num_labels, init_checkpoint, learning_rate,
     else:
       output_spec = tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
-          predictions={"probabilities": probabilities},
+          #predictions={"probabilities": probabilities},
           scaffold_fn=scaffold_fn)
     return output_spec
 
@@ -757,7 +757,7 @@ def input_fn_builder(features, seq_length, is_training, drop_remainder):
                 shape=[num_examples, seq_length],
                 dtype=tf.int32),
         "label_ids":
-            tf.constant(all_label_ids, shape=[num_examples], dtype=tf.float32),
+            tf.constant(all_label_ids, shape=[num_examples], dtype=tf.int32),
     })
 
     if is_training:
