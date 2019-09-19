@@ -206,14 +206,19 @@ class CustomProcessor(DataProcessor):
     """Creates examples for the training and dev sets."""
     examples = []
     for (i, line) in enumerate(lines):
-        if i == 0:
-            continue
+        if set_type == "test" and i == 0:
+          continue
         guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
-        text_a = tokenization.convert_to_unicode(line[3])
-        text_b = tokenization.convert_to_unicode(line[2])
-        label = float(line[1])
-        examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
-    return examples
+        if set_type == "test":
+          text_a = tokenization.convert_to_unicode(line[1])
+          label = "0"
+        else:
+          text_a = tokenization.convert_to_unicode(line[3])
+          text_b = tokenization.convert_to_unicode(line[2])
+          label = float(line[1])
+        examples.append(
+            InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+      return examples
 ###
 
 def convert_examples_to_features(examples, label_list, max_seq_length,
@@ -548,7 +553,7 @@ def main(_):
       "custom": CustomProcessor
   }
 
-  if not FLAGS.do_train and not FLAGS.do_eval:
+  if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
     raise ValueError("At least one of `do_train` or `do_eval` must be True.")
 
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
@@ -668,6 +673,52 @@ def main(_):
       for key in sorted(result.keys()):
         tf.logging.info("  %s = %s", key, str(result[key]))
         writer.write("%s = %s\n" % (key, str(result[key])))
+
+        if FLAGS.do_predict:
+          predict_examples = processor.get_test_examples(FLAGS.data_dir)
+          num_actual_predict_examples = len(predict_examples)
+          if FLAGS.use_tpu:
+            # TPU requires a fixed batch size for all batches, therefore the number
+            # of examples must be a multiple of the batch size, or else examples
+            # will get dropped. So we pad with fake examples which are ignored
+            # later on.
+            while len(predict_examples) % FLAGS.predict_batch_size != 0:
+              predict_examples.append(PaddingInputExample())
+
+          predict_file = os.path.join(FLAGS.output_dir, "predict.tf_record")
+          file_based_convert_examples_to_features(predict_examples, label_list,
+                                                  FLAGS.max_seq_length, tokenizer,
+                                                  predict_file)
+
+          tf.logging.info("***** Running prediction*****")
+          tf.logging.info("  Num examples = %d (%d actual, %d padding)",
+                          len(predict_examples), num_actual_predict_examples,
+                          len(predict_examples) - num_actual_predict_examples)
+          tf.logging.info("  Batch size = %d", FLAGS.predict_batch_size)
+
+          predict_drop_remainder = True if FLAGS.use_tpu else False
+          predict_input_fn = file_based_input_fn_builder(
+              input_file=predict_file,
+              seq_length=FLAGS.max_seq_length,
+              is_training=False,
+              drop_remainder=predict_drop_remainder)
+
+          result = estimator.predict(input_fn=predict_input_fn)
+
+          output_predict_file = os.path.join(FLAGS.output_dir, "test_results.tsv")
+          with tf.gfile.GFile(output_predict_file, "w") as writer:
+            num_written_lines = 0
+            tf.logging.info("***** Predict results *****")
+            for (i, prediction) in enumerate(result):
+              probabilities = prediction["probabilities"]
+              if i >= num_actual_predict_examples:
+                break
+              output_line = "\t".join(
+                  str(class_probability)
+                  for class_probability in probabilities) + "\n"
+              writer.write(output_line)
+              num_written_lines += 1
+          assert num_written_lines == num_actual_predict_examples
 
   if FLAGS.do_test:
     test_examples = processor.get_test_examples(FLAGS.data_dir)
