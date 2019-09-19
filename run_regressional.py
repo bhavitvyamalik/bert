@@ -216,9 +216,9 @@ class CustomProcessor(DataProcessor):
           text_a = tokenization.convert_to_unicode(line[3])
           text_b = tokenization.convert_to_unicode(line[2])
           label = float(line[1])
-        examples.append(
-            InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
-      return examples
+        examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+
+    return examples
 ###
 
 def convert_examples_to_features(examples, label_list, max_seq_length,
