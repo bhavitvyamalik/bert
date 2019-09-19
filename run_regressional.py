@@ -210,7 +210,7 @@ class CustomProcessor(DataProcessor):
           continue
         guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
         if set_type == "test":
-          text_a = tokenization.convert_to_unicode(line[3])
+          text_a = tokenization.convert_to_unicode(line[1])
           text_b = None
           label = "0"
         else:
