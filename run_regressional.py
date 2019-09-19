@@ -622,7 +622,6 @@ def main(_):
       config=run_config,
       train_batch_size=FLAGS.train_batch_size,
       eval_batch_size=FLAGS.eval_batch_size,
-      test_batch_size=FLAGS.test_batch_size
       )
 
   if FLAGS.do_train:
@@ -684,7 +683,7 @@ def main(_):
 
     tf.logging.info("***** Running test *****")
     tf.logging.info("  Num examples = %d", len(test_examples))
-    tf.logging.info("  Batch size = %d", FLAGS.test_batch_size)
+    tf.logging.info("  Batch size = %d", FLAGS.train_batch_size)
 
     # This tells the estimator to run through the entire set.
     test_steps = None
@@ -693,7 +692,7 @@ def main(_):
     if FLAGS.use_tpu:
       # Eval will be slightly WRONG on the TPU because it will truncate
       # the last batch.
-      test_steps = int(len(test_examples) / FLAGS.test_batch_size)
+      test_steps = int(len(test_examples) / FLAGS.train_batch_size)
 
     test_drop_remainder = True if FLAGS.use_tpu else False
     test_input_fn = input_fn_builder(
