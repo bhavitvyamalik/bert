@@ -717,7 +717,7 @@ def main(_):
           predict_example = [InputExample(guid=2, text_a='He is a smart and experienced person', text_b='He\'s a truly wise man')]
           predict_features = convert_examples_to_features(predict_example, label_list, FLAGS.max_seq_length, tokenizer, shut_up=True)
           input_fn = input_fn_builder(features=predict_features, seq_length=FLAGS.max_seq_length, is_training=False, drop_remainder=False)
-          result = estimator.predict(input_fn=input_fn)
+          result = estimator.predict(input_fn=input_fn, steps=test_steps)
       t1 = time.time()
       print("Time necessary for 1 prediction : {}".format((t1 - t0) / 100))
       print("Time necessary for training : {}".format(train_t1 - train_t0))
