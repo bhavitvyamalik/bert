@@ -621,7 +621,9 @@ def main(_):
       model_fn=model_fn,
       config=run_config,
       train_batch_size=FLAGS.train_batch_size,
-      eval_batch_size=FLAGS.eval_batch_size)
+      eval_batch_size=FLAGS.eval_batch_size,
+      test_batch_size=FLAGS.test_batch_size
+      )
 
   if FLAGS.do_train:
     import time
