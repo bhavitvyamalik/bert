@@ -211,12 +211,13 @@ class CustomProcessor(DataProcessor):
         guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
         if set_type == "test":
           text_a = tokenization.convert_to_unicode(line[3])
+          text_b = None
           label = "0"
         else:
           text_a = tokenization.convert_to_unicode(line[3])
           text_b = tokenization.convert_to_unicode(line[2])
           label = float(line[1])
-        examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+        examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
 
     return examples
 ###
