@@ -210,13 +210,13 @@ class CustomProcessor(DataProcessor):
           continue
         guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
         if set_type == "test":
-          text_a = tokenization.convert_to_unicode(line[1])
+          text_a = tokenization.convert_to_unicode(line[3])
           label = "0"
         else:
           text_a = tokenization.convert_to_unicode(line[3])
           text_b = tokenization.convert_to_unicode(line[2])
           label = float(line[1])
-        examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+        examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
 
     return examples
 ###
@@ -673,7 +673,7 @@ def main(_):
       for key in sorted(result.keys()):
         tf.logging.info("  %s = %s", key, str(result[key]))
         writer.write("%s = %s\n" % (key, str(result[key])))
-        
+
   if FLAGS.do_test:
     test_examples = processor.get_test_examples(FLAGS.data_dir)
     test_features = convert_examples_to_features(
