@@ -223,7 +223,7 @@ class CustomProcessor(DataProcessor):
 ###
 
 def convert_examples_to_features(examples, label_list, max_seq_length,
-                                 tokenizer, shut_up=False):
+                                 tokenizer, new_var=False):
   """Loads a data file into a list of `InputBatch`s."""
 
 #   label_map = {}
@@ -300,7 +300,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
     assert len(segment_ids) == max_seq_length
 
     # label_id = label_map[example.label]
-    if not shut_up:
+    if not new_var:
         label_id = example.label
         if ex_index < 5:
           tf.logging.info("*** Example ***")
@@ -703,7 +703,8 @@ def main(_):
         drop_remainder=test_drop_remainder)
 
     result = estimator.predict(input_fn=test_input_fn)
-
+    print(result)
+    ###AttributeError: predict_batch_size
     output_test_file = os.path.join(FLAGS.output_dir, "test_results.txt")
     with tf.gfile.GFile(output_test_file, "w") as writer:
       tf.logging.info("***** Test results *****")
@@ -717,7 +718,7 @@ def main(_):
       t0 = time.time()
       for i in range(100):
           predict_example = [InputExample(guid=2, text_a='He is a smart and experienced person', text_b='He\'s a truly wise man')]
-          predict_features = convert_examples_to_features(predict_example, label_list, FLAGS.max_seq_length, tokenizer, shut_up=True)
+          predict_features = convert_examples_to_features(predict_example, label_list, FLAGS.max_seq_length, tokenizer, new_var=True)
           input_fn = input_fn_builder(features=predict_features, seq_length=FLAGS.max_seq_length, is_training=False, drop_remainder=False)
           result = estimator.predict(input_fn=input_fn)
       t1 = time.time()
